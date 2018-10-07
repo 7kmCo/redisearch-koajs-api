@@ -53,7 +53,30 @@ router.post('/create', async (ctx, next) => {
 })
 
 /**
-* Create index with passed settings
+* Add to index
+*
+* @param request
+* @returns
+*/
+router.post('/add', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName
+  const language = ctx.request.body.language
+  const id = ctx.request.body.id
+  const fields = ctx.request.body.fields
+  
+  const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
+  try {
+    const inserted = await command('FT.ADD', insert)
+    ctx.body = inserted
+  } catch (error) {
+    ctx.body = {
+      error: 'Error inserting into index.'
+    }
+  }
+})
+
+/**
+* Drop the index
 *
 * @param string idx       index name to be dropped
 * @returns
