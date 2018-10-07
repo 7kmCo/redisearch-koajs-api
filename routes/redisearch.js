@@ -29,4 +29,29 @@ router.get('/info/:idx', async (ctx, next) => {
   }
 })
 
+
+/**
+* Create index with passed settings
+*
+* @param request
+* @returns
+*/
+router.post('/create', async (ctx, next) => {
+
+  const indexName = ctx.request.body.indexName
+  const fieldsSchema = ctx.request.body.schema
+
+  const schema = [indexName, 'SCHEMA', ...fieldsSchema]
+  const created = await command('FT.CREATE', schema)
+  if(!created){
+    ctx.body = {
+      error: 'Error creating index'
+    }
+  } else {
+    ctx.body = {
+      results: created
+    }
+  }
+})
+
 module.exports = router
