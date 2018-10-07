@@ -54,4 +54,22 @@ router.post('/create', async (ctx, next) => {
   }
 })
 
+/**
+* Create index with passed settings
+*
+* @param string idx       index name to be dropped
+* @returns
+*/
+router.delete('/drop/:idx', async (ctx, next) => {
+  const indexName = ctx.params.idx
+  const dropped = await command('FT.DROP', [indexName])
+  if (!dropped) {
+    ctx.body = {
+      error: 'There is some errors dropping the index.'
+    }
+  } else {
+    ctx.body = dropped
+  }
+})
+
 module.exports = router
