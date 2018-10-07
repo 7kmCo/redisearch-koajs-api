@@ -19,13 +19,13 @@ client.on('connect', () => {
 */
 router.get('/info/:idx', async (ctx, next) => {
   const indexName = ctx.params.idx
-  const info = await command('FT.INFO', [indexName])
-  if (!info) {
+  try {
+    const info = await command('FT.INFO', [indexName])
+    ctx.body = info
+  } catch (error) {
     ctx.body = {
       error: 'There is some errors while retriving inex info.'
     }
-  } else {
-    ctx.body = info
   }
 })
 
@@ -42,14 +42,12 @@ router.post('/create', async (ctx, next) => {
   const fieldsSchema = ctx.request.body.schema
 
   const schema = [indexName, 'SCHEMA', ...fieldsSchema]
-  const created = await command('FT.CREATE', schema)
-  if(!created){
+  try {
+    const created = await command('FT.CREATE', schema)
+    ctx.body = created
+  } catch (error) {
     ctx.body = {
       error: 'Error creating index'
-    }
-  } else {
-    ctx.body = {
-      results: created
     }
   }
 })
@@ -62,13 +60,13 @@ router.post('/create', async (ctx, next) => {
 */
 router.delete('/drop/:idx', async (ctx, next) => {
   const indexName = ctx.params.idx
-  const dropped = await command('FT.DROP', [indexName])
-  if (!dropped) {
+  try {
+    const dropped = await command('FT.DROP', [indexName])
+    ctx.body = dropped
+  } catch (error) {
     ctx.body = {
       error: 'There is some errors dropping the index.'
-    }
-  } else {
-    ctx.body = dropped
+    } 
   }
 })
 
