@@ -76,6 +76,29 @@ router.post('/add', async (ctx, next) => {
 })
 
 /**
+* Search
+*
+* @param request
+* @returns
+*/
+router.post('/search', async (ctx, next) => {
+  const query = ctx.request.body.query
+  const indexName = ctx.request.body.indexName
+  const from = ctx.request.body.from
+  const offset = ctx.request.body.offset
+  
+  const searchCommand = [ indexName, query, 'NOCONTENT', 'LIMIT', from, offset ] 
+  try {
+    const searchResult = await command('FT.SEARCH', searchCommand)
+    ctx.body = searchResult
+  } catch (error) {
+    ctx.body = {
+      error: 'Error searching.'
+    }
+  }
+})
+
+/**
 * Drop the index
 *
 * @param string idx       index name to be dropped
