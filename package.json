@@ -1,0 +1,36 @@
+{
+  "name": "redisearch-api",
+  "version": "1.0.0",
+  "description": "Api wrapper for redisearch",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app",
+    "start": "NODE_ENV=production node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/7km/redisearch-api.git"
+  },
+  "keywords": [
+    "redisearch",
+    "search",
+    "high-performance-search"
+  ],
+  "author": "Foad Yousefi <foadyousefi@gmail.com>",
+  "license": "BSD-3-Clause",
+  "homepage": "https://bitbucket.org/7km/redisearch-api#readme",
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "koa": "^2.5.3",
+    "koa-async-validator": "^0.1.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-qs": "^2.0.0",
+    "koa-router": "^7.4.0",
+    "pg": "^7.5.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.39.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}
