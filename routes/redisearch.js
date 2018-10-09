@@ -67,6 +67,27 @@ router.post('/add', async (ctx, next) => {
   ctx.body = await indexIt(indexName, language, id, fields)
 })
 
+/**
+* Bulk add to index
+*
+* @param request
+* @returns
+*/
+router.post('/bulk', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName
+  const posts = ctx.request.body.posts
+  for (let post of posts) {
+    const language = post.language
+    const id = post.id
+    const fields = post.fields
+    await indexIt(indexName, language, id, fields)
+  }
+  ctx.body = {
+    code: 201,
+    message: 'Documents are inserted'
+  }
+})
+
 const indexIt = async (indexName, language, id, fields) => {
   const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
   try {
