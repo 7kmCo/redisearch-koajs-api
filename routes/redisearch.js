@@ -20,11 +20,11 @@ client.on('connect', () => {
 router.get('/info/:idx', async (ctx, next) => {
   const indexName = ctx.params.idx
   try {
-    const info = await command('FT.INFO', [indexName])
-    ctx.body = info
+    ctx.body = await command('FT.INFO', [indexName])
   } catch (error) {
     ctx.body = {
-      error: 'There is some errors while retriving inex info.'
+      message: 'There is some errors while retriving inex info.',
+      error
     }
   }
 })
@@ -43,11 +43,11 @@ router.post('/create', async (ctx, next) => {
 
   const schema = [indexName, 'SCHEMA', ...fieldsSchema]
   try {
-    const created = await command('FT.CREATE', schema)
-    ctx.body = created
+    ctx.body = await command('FT.CREATE', schema)
   } catch (error) {
     ctx.body = {
-      error: 'Error creating index'
+      message: 'Error creating index',
+      error
     }
   }
 })
@@ -63,7 +63,7 @@ router.post('/add', async (ctx, next) => {
   const language = ctx.request.body.language
   const id = ctx.request.body.id
   const fields = ctx.request.body.fields
-  
+
   ctx.body = await indexIt(indexName, language, id, fields)
 })
 
@@ -95,17 +95,18 @@ router.patch('/update', async (ctx, next) => {
     if (deleted) {
       const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
       try {
-        const inserted = await command('FT.ADD', insert)
-        ctx.body = inserted
+        ctx.body = await command('FT.ADD', insert)
       } catch (error) {
         ctx.body = {
-          error: 'Error inserting into index.'
+          message: 'Error inserting into index.',
+          error
         }
       }
     }
   } catch (error) {
     ctx.body = {
-      error: 'Error deleting old document.'
+      message: 'Error deleting old document.',
+      error
     }
   }
 })
@@ -129,11 +130,11 @@ router.post('/search', async (ctx, next) => {
     searchCommand.push('NOCONTENT')
   }
   try {
-    const searchResult = await command('FT.SEARCH', searchCommand)
-    ctx.body = searchResult
+    ctx.body = await command('FT.SEARCH', searchCommand)
   } catch (error) {
     ctx.body = {
-      error: 'Error searching.'
+      message: 'Error searching.',
+      error
     }
   }
 })
@@ -147,11 +148,11 @@ router.post('/search', async (ctx, next) => {
 router.delete('/drop/:idx', async (ctx, next) => {
   const indexName = ctx.params.idx
   try {
-    const dropped = await command('FT.DROP', [indexName])
-    ctx.body = dropped
+    ctx.body = await command('FT.DROP', [indexName])
   } catch (error) {
     ctx.body = {
-      error: 'There is some errors dropping the index.'
+      message: 'There is some errors dropping the index.',
+      error
     } 
   }
 })
