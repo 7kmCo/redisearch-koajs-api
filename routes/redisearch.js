@@ -64,18 +64,20 @@ router.post('/add', async (ctx, next) => {
   const id = ctx.request.body.id
   const fields = ctx.request.body.fields
   
-  const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
-  try {
-    const inserted = await command('FT.ADD', insert)
-    ctx.body = inserted
-  } catch (error) {
-    ctx.body = {
-      error: 'Error inserting into index.'
-    }
-  }
+  ctx.body = await indexIt(indexName, language, id, fields)
 })
 
-
+const indexIt = async (indexName, language, id, fields) => {
+  const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
+  try {
+    return await command('FT.ADD', insert)
+  } catch (error) {
+    return {
+      message: 'Error inserting into index.',
+      error
+    }
+  }
+}
 /**
 * Update individual document
 *
