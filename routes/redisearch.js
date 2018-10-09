@@ -76,15 +76,23 @@ router.post('/add', async (ctx, next) => {
 router.post('/bulk', async (ctx, next) => {
   const indexName = ctx.request.body.indexName
   const posts = ctx.request.body.posts
-  for (let post of posts) {
-    const language = post.language
-    const id = post.id
-    const fields = post.fields
-    await indexIt(indexName, language, id, fields)
-  }
-  ctx.body = {
-    code: 201,
-    message: 'Documents are inserted'
+  ctx.body = typeof posts
+  if (typeof posts == 'object') {
+    for (let post of posts) {
+      const language = post.language
+      const id = post.id
+      const fields = post.fields
+      await indexIt(indexName, language, id, fields)
+    }
+    ctx.body = {
+      code: 201,
+      message: 'Documents are inserted'
+    }
+  } else {
+    ctx.body = {
+      code: 500,
+      message: 'Can not inser data'
+    }
   }
 })
 
