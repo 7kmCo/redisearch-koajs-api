@@ -84,10 +84,14 @@ router.post('/add', async (ctx, next) => {
 router.post('/search', async (ctx, next) => {
   const query = ctx.request.body.query
   const indexName = ctx.request.body.indexName
+  const noContent = ctx.request.body.noContent || false
   const from = ctx.request.body.from
   const offset = ctx.request.body.offset
   
-  const searchCommand = [ indexName, query, 'NOCONTENT', 'LIMIT', from, offset ] 
+  const searchCommand = [ indexName, query, 'LIMIT', from, offset ] 
+  if (noContent) {
+    searchCommand.push('NOCONTENT')
+  }
   try {
     const searchResult = await command('FT.SEARCH', searchCommand)
     ctx.body = searchResult
