@@ -75,6 +75,40 @@ router.post('/add', async (ctx, next) => {
   }
 })
 
+
+/**
+* Update individual document
+*
+* @param request
+* @returns
+*/
+router.patch('/update', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName
+  const language = ctx.request.body.language
+  const id = ctx.request.body.id
+  const fields = ctx.request.body.fields
+  // Since there is no update command, we need to first delete the document then insert it with new data.
+  try {
+    const deleted = await command('FT.DEL', [indexName, id, 'DD'])
+    if (deleted) {
+      const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
+      try {
+        const inserted = await command('FT.ADD', insert)
+        ctx.body = inserted
+      } catch (error) {
+        ctx.body = {
+          error: 'Error inserting into index.'
+        }
+      }
+    }
+  } catch (error) {
+    ctx.body = {
+      error: 'Error deleting old document.'
+    }
+  }
+})
+
+
 /**
 * Search
 *
