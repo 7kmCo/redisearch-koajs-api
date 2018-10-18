@@ -96,6 +96,15 @@ router.post('/bulk', async (ctx, next) => {
   }
 })
 
+/**
+* Add data to index
+*
+* @param string indexName     Index name
+* @param string language      Language of data
+* @param integer id           Post id
+* @param object fields        Fields data to be added to index
+* @returns object
+*/
 const indexIt = async (indexName, language, id, fields) => {
   const insert = [ indexName, id , 1, 'LANGUAGE', language, 'FIELDS', ...fields ] 
   try {
@@ -107,6 +116,96 @@ const indexIt = async (indexName, language, id, fields) => {
     }
   }
 }
+
+
+/**
+* Get suggestion
+*
+* @param request
+* @returns
+*/
+router.post('/suggest/get', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName + 'Sugg'
+  const query = ctx.request.body.query
+  const fuzzy = ctx.request.body.fuzzy || 'FUZZY'
+  const withPayloads = ctx.request.body.withPayloads || 'WITHPAYLOADS'
+  const max = ctx.request.body.max || 10
+  const suggCommand = [ indexName, query, fuzzy, withPayloads, 'MAX', max ] 
+  try {
+    ctx.body = await command('FT.SUGGET', suggCommand)
+  } catch (error) {
+    ctx.body = {
+      message: 'Error getting suggestion.',
+      error
+    }
+  }
+})
+
+/**
+* Add suggestion
+*
+* @param request
+* @returns
+*/
+router.post('/suggest/add', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName + 'Sugg'
+  const title = ctx.request.body.title
+  const score = ctx.request.body.score || 1
+  const payload = ctx.request.body.payload
+  ctx.body = await addSuggestion(indexName, title, score, payload)
+})
+
+
+/**
+* Add suggestion in bulk
+*
+* @param request
+* @returns
+*/
+router.post('/suggest/bulk', async (ctx, next) => {
+  const indexName = ctx.request.body.indexName + 'Sugg'
+  const posts = ctx.request.body.posts
+  if (typeof posts == 'object') {
+    for (let post of posts) {
+      const title = post.title
+      const score = post.score
+      const payload = post.payload
+      await addSuggestion(indexName, title, score, payload)
+    }
+    ctx.body = {
+      code: 201,
+      message: 'Documents are added to suggestion'
+    }
+  } else {
+    ctx.body = {
+      code: 500,
+      message: 'Can not inser data'
+    }
+  }
+})
+
+
+/**
+* Add suggestion to index
+*
+* @param string indexName     Index name
+* @param string title         Title of the post
+* @param integer score        Score given to a title
+* @param string payload       Some extra data like post id to be used later
+* @returns bool
+*/
+const addSuggestion = async (indexName, title, score, payload) => {
+  const suggesyCommand = [ indexName, title, score, 'PAYLOAD', payload ] 
+  try {
+    return await command('FT.SUGADD', suggesyCommand)
+  } catch (error) {
+    return {
+      message: 'Error inserting suggestion into index.',
+      error
+    }
+  }
+}
+
 /**
 * Update individual document
 *
