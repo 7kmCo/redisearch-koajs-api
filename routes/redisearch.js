@@ -179,7 +179,7 @@ router.post('/suggest/bulk', async (ctx, next) => {
   } else {
     ctx.body = {
       code: 500,
-      message: 'Can not inser data'
+      message: 'Can not insert data'
     }
   }
 })
