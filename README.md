@@ -32,3 +32,6 @@ request body to `http://localhost:3000/redisearch/search`:
 ```
 
 For complete list of RediSearch commands, please check [redisearch official website](https://oss.redislabs.com/redisearch/Commands.html).
+
+
+Any kind of suggestions pull requests and issues are highly appreciated.
