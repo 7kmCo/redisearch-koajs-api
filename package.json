@@ -28,8 +28,7 @@
     "koa-router": "^7.4.0",
     "pg": "^7.7.1",
     "pg-hstore": "^2.3.2",
-    "redis": "^2.8.0",
-    "sequelize": "^4.42.0"
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
